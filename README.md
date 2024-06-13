@@ -25,6 +25,8 @@ RUN bun src/migrate.ts
 
 ## API
 
+check at https://www.livescores.com/football/euro-2024/?tz=7
+
 see at http://localhost:9400/swagger
 
 

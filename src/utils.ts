@@ -2,6 +2,7 @@
 import puppeteer from "puppeteer";
 import { db } from "./db";
 import * as schema from "./schema";
+import { and, sql } from "drizzle-orm";
 
 
 export async function parseWeb(url?: string) {
@@ -81,10 +82,18 @@ export async function parseWeb(url?: string) {
     }
 }
 
-export async function getEURO2024Data() {
-    const result = await db.select().from(schema.euro2024);
+export async function getEURO2024Data(teamA?: string, teamB?: string, round?: string) {
+
+    let result = await db.select().from(schema.euro2024).where(
+        and(
+            teamA ? sql`lower(${schema.euro2024.home}) = lower(${teamA}) OR lower(${schema.euro2024.competitor}) = lower(${teamA})`:undefined,
+            teamB ? sql`lower(${schema.euro2024.home}) = lower(${teamB}) OR lower(${schema.euro2024.competitor}) = lower(${teamB})`:undefined,
+            round ? sql`lower(${schema.euro2024.round}) = lower(${round})`:undefined
+        )
+    )
+
     return {
-        data : result
+        data: result
     }
 }
 
@@ -97,5 +106,5 @@ async function insertDB(data: any) {
         ...data
     ]);
 
-    console.log(`Seeding complete.`);
+    console.log(`Update Data Complete.`);
 }
