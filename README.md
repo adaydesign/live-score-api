@@ -12,7 +12,7 @@ To start the development server run:
 bun run dev
 ```
 
-Open http://localhost:3000/ with your browser to see the result.
+Open http://localhost:9400/ with your browser to see the result.
 
 ## Database
 - เพื่อสร้างไฟล์ ดาต้าเบส และไฟล์ model structure (ทำครั้งเดียวตอนที่ยังไม่มี ไฟล์ sqlite หรือ อัพเดทตาราง)
@@ -24,6 +24,8 @@ RUN bun src/migrate.ts
 ```
 
 ## API
+
+see at http://localhost:9400/swagger
 
 
 ### แก้ไขเรื่อง puppeteer บน docker
