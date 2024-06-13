@@ -11,7 +11,9 @@ export async function parseWeb(url?: string) {
 
     // console.log("Parsing the www.livescores.com homepage");
     // Launch the browser
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+   });
 
     // Open a new tab
     const page = await browser.newPage();
