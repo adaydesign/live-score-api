@@ -1,4 +1,8 @@
-const puppeteer = require("puppeteer");
+// const puppeteer = require("puppeteer");
+import puppeteer from "puppeteer";
+import { db } from "./db";
+import * as schema from "./schema";
+
 
 export async function parseWeb(url?: string) {
     // https://www.livescores.com/football/euro-2024-qualification/?tz=7
@@ -13,13 +17,13 @@ export async function parseWeb(url?: string) {
     // Launch the browser
     const browser = await puppeteer.launch({
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
-   });
+    });
 
     // Open a new tab
     const page = await browser.newPage();
 
     // Visit the page and wait until network connections are completed
-    
+
     await page.goto(targetURL, { waitUntil: 'networkidle2' });
 
     // Interact with the DOM to retrieve the titles
@@ -39,9 +43,9 @@ export async function parseWeb(url?: string) {
     let title = ""
     let round = ""
     let date = ""
-    let obj:any = {}
+    let obj: any = {}
 
-    titles.forEach((el:any) => {
+    titles.forEach((el: any) => {
         if (el.selector == "ob") {
             title = el.content
         } else if (el.selector == "pb") {
@@ -55,7 +59,7 @@ export async function parseWeb(url?: string) {
             obj["home"] = el.content
         } else if (el.selector == "gi") {
             obj["homeScore"] = el.content
-        } 
+        }
         else if (el.selector == "hi") {
             obj["compScore"] = el.content
         } else if (el.selector == "ci") {
@@ -67,7 +71,31 @@ export async function parseWeb(url?: string) {
         }
     })
 
+
+    // Insert data to database
+    insertDB(data)
+
+
     return {
         "data": data
     }
+}
+
+export async function getEURO2024Data() {
+    const result = await db.select().from(schema.euro2024);
+    return {
+        data : result
+    }
+}
+
+async function insertDB(data: any) {
+    // clear
+    await db.delete(schema.euro2024);
+
+    // Insert data to database
+    await db.insert(schema.euro2024).values([
+        ...data
+    ]);
+
+    console.log(`Seeding complete.`);
 }
